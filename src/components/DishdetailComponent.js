@@ -3,6 +3,7 @@ import React, { Component, Fragment } from "react";
 import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label } from "reactstrap";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import { Link } from "react-router-dom";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
 import { Loading } from "./LoadingComponent";
 import { baseUrl } from "../shared/baseUrl";
@@ -94,13 +95,15 @@ class CommentForm extends Component {
 
 function RenderDish({ dish }) {
     return (
-        <Card>
-            <CardImg top src={baseUrl + dish.image} alt={dish.name} />
-            <CardBody>
-                <CardTitle>{dish.name}</CardTitle>
-                <CardText>{dish.description}</CardText>
-            </CardBody>
-        </Card>
+        <FadeTransform in transformProps={{ exitTransform: "scale(0.5) translateY(-50%)" }}>
+            <Card>
+                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>{" "}
+        </FadeTransform>
     );
 }
 
@@ -109,18 +112,22 @@ function RenderComments({ comments, postComment, dishId }) {
         const all_comments = comments.map((comment) => {
             var date = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "2-digit" }).format(new Date(comment.date));
             return (
-                <li key={comment.id} className="my-4">
-                    <div>{comment.comment}</div>
-                    <div>
-                        -- {comment.author}, {date}
-                    </div>
-                </li>
+                <Fade in>
+                    <li key={comment.id} className="my-4">
+                        <div>{comment.comment}</div>
+                        <div>
+                            -- {comment.author}, {date}
+                        </div>
+                    </li>
+                </Fade>
             );
         });
         return (
             <div>
                 <h4>Comments</h4>
-                <ul className="list-unstyled">{all_comments}</ul>
+                <ul className="list-unstyled">
+                    <Stagger in>{all_comments}</Stagger>
+                </ul>
                 <CommentForm postComment={postComment} dishId={dishId} />
             </div>
         );
